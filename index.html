@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 Valentine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #FAB8B8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: #EBC5B9;
+            padding: 60px 80px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 48px;
+            color: white;
+            margin-bottom: 50px;
+            font-weight: bold;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            min-height: 120px;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button .main-text {
+            font-size: 28px;
+        }
+
+        button .sub-text {
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        #yesBtn {
+            background: #4caf50;
+            color: white;
+            position: relative;
+            pointer-events: auto;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        #noBtn {
+            background: #f44336;
+            color: white;
+            position: relative;
+        }
+
+        #noBtn.floating {
+            position: fixed !important;
+        }
+
+        #noBtn:hover {
+            background: #d32f2f;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Veux-tu être ma Valentine ? 💕</h1>
+        <div class="buttons">
+            <button id="yesBtn">
+                <span class="main-text">Oui</span>
+                <span class="sub-text">stp</span>
+            </button>
+            <button id="noBtn">
+                <span class="main-text">Non</span>
+                <span class="sub-text" id="noSubText">aïe</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Fait avec le ❤️ par Adem
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const noSubText = document.getElementById('noSubText');
+        
+        const messages = [
+            "aïe",
+            "t'es sérieuse ?",
+            "d'accord.",
+            "tant pis",
+            "arrête !",
+            "clique pas",
+            "hein ?",
+            "en sah ?"
+        ];
+        
+        let currentMessageIndex = 0;
+
+        // Fonction pour déplacer le bouton "Non" aléatoirement
+        noBtn.addEventListener('mouseenter', function() {
+            const maxX = window.innerWidth - noBtn.offsetWidth - 40;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 40;
+            
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+            
+            noBtn.classList.add('floating');
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            
+            // Changer le message
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            noSubText.textContent = messages[currentMessageIndex];
+        });
+
+        // Redirection pour le bouton "Oui" - S'assurer qu'il reste fixe
+        yesBtn.addEventListener('click', function() {
+            window.location.href = 'resultat.html';
+        });
+    </script>
+</body>
+</html>

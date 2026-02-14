@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 Ta récompense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #FAB8B8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+
+        .home-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            text-align: center;
+            background: #EBC5B9;
+            padding: 60px 80px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 42px;
+            color: white;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .image-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .cart-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .quantity-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #4caf50;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .quantity-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .quantity-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #f44336;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+            z-index: 10;
+        }
+
+        img {
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            max-height: 350px;
+            display: block;
+            background-color: white;
+            border-radius: 10px;
+            transition: filter 0.3s ease;
+        }
+
+        img.grayscale {
+            filter: grayscale(100%);
+        }
+
+        /* Animations de bounce */
+        @keyframes bounceUp {
+            0% { transform: scale(1) translateY(0); }
+            30% { transform: scale(1.15) translateY(-15px); }
+            50% { transform: scale(1.08) translateY(-8px); }
+            70% { transform: scale(1.03) translateY(-3px); }
+            85% { transform: scale(1.01) translateY(-1px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        @keyframes bounceDown {
+            0% { transform: scale(1) translateY(0); }
+            30% { transform: scale(0.85) translateY(15px); }
+            50% { transform: scale(0.92) translateY(8px); }
+            70% { transform: scale(0.97) translateY(3px); }
+            85% { transform: scale(0.99) translateY(1px); }
+            100% { transform: scale(1) translateY(0); }
+        }
+
+        .bounce-up {
+            animation: bounceUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .bounce-down {
+            animation: bounceDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .validate-btn {
+            margin-top: 30px;
+            padding: 18px 50px;
+            font-size: 22px;
+            font-weight: bold;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .validate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(255, 152, 0, 0.6);
+        }
+
+        .validate-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Overlay et modal */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Singe animation */
+        .monkey {
+            position: fixed;
+            bottom: -300px;
+            right: 50px;
+            font-size: 200px;
+            z-index: 1001;
+            animation: monkeySlideUp 1s ease-out forwards;
+        }
+
+        @keyframes monkeySlideUp {
+            0% {
+                bottom: -300px;
+                transform: rotate(-20deg);
+            }
+            60% {
+                bottom: 45%;
+                transform: rotate(5deg);
+            }
+            80% {
+                bottom: 42%;
+                transform: rotate(-2deg);
+            }
+            100% {
+                bottom: 43%;
+                transform: rotate(0deg) translateY(-50%);
+            }
+        }
+
+        /* Message modal */
+        .message-panel {
+            background: white;
+            padding: 50px 70px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 1002;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s backwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .message-panel h2 {
+            font-size: 42px;
+            color: #e91e63;
+            margin: 0;
+        }
+
+        .hearts {
+            font-size: 48px;
+            margin-top: 30px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-icon" onclick="window.location.href='valentine.html'" title="Retour à l'accueil">
+        🏠
+    </div>
+    
+    <div class="container">
+        <h1>Viens réclamer ça Lundi 💕</h1>
+        <div class="image-container">
+            <div class="cart-wrapper">
+                <button class="quantity-btn" id="minusBtn">−</button>
+                <div class="image-wrapper">
+                    <div class="quantity-badge" id="quantityBadge">1</div>
+                    <img id="chupaImage" src="chupa_chups.png" alt="Chupa Chups" onerror="this.src='/mnt/user-data/uploads/1770738996284_image.png'">
+                </div>
+                <button class="quantity-btn" id="plusBtn">+</button>
+            </div>
+        </div>
+        <button class="validate-btn" id="validateBtn">
+            <span>🛒</span>
+            <span>Valider</span>
+        </button>
+        <div class="hearts">💖✨💖</div>
+    </div>
+
+    <!-- Overlay avec singe et message -->
+    <div class="overlay" id="overlay">
+        <div class="monkey">🐵</div>
+        <div class="message-panel">
+            <h2>On se retrouve Lundi ! 💕</h2>
+        </div>
+    </div>
+
+    <div class="footer">
+        Fait avec le ❤️ par Adem
+    </div>
+
+    <script>
+        let quantity = 1;
+        const quantityBadge = document.getElementById('quantityBadge');
+        const chupaImage = document.getElementById('chupaImage');
+        const plusBtn = document.getElementById('plusBtn');
+        const minusBtn = document.getElementById('minusBtn');
+        const validateBtn = document.getElementById('validateBtn');
+        const overlay = document.getElementById('overlay');
+
+        // Fonction pour mettre à jour l'affichage
+        function updateDisplay() {
+            quantityBadge.textContent = quantity;
+            
+            if (quantity === 0) {
+                chupaImage.classList.add('grayscale');
+            } else {
+                chupaImage.classList.remove('grayscale');
+            }
+        }
+
+        // Fonction pour ajouter l'animation de bounce
+        function triggerBounce(direction) {
+            // Retirer les classes d'animation existantes
+            chupaImage.classList.remove('bounce-up', 'bounce-down');
+            
+            // Forcer le reflow pour relancer l'animation
+            void chupaImage.offsetWidth;
+            
+            // Ajouter la nouvelle animation
+            if (direction === 'up') {
+                chupaImage.classList.add('bounce-up');
+            } else {
+                chupaImage.classList.add('bounce-down');
+            }
+            
+            // Retirer la classe après l'animation
+            setTimeout(() => {
+                chupaImage.classList.remove('bounce-up', 'bounce-down');
+            }, 600);
+        }
+
+        // Bouton plus
+        plusBtn.addEventListener('click', function() {
+            quantity++;
+            updateDisplay();
+            triggerBounce('up');
+        });
+
+        // Bouton moins
+        minusBtn.addEventListener('click', function() {
+            if (quantity > 0) {
+                quantity--;
+                updateDisplay();
+                triggerBounce('down');
+            }
+        });
+
+        // Bouton valider
+        validateBtn.addEventListener('click', function() {
+            overlay.classList.add('active');
+        });
+
+        // Fermer l'overlay si on clique dessus
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
